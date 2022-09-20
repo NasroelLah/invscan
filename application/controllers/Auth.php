@@ -25,46 +25,56 @@ class Auth extends CI_Controller
         $this->load->view('layout/auth_footer');
     }
 
+    #create function to validate login form
     public function login_check()
     {
-        $email = $this->input->post('email');
-        $password = $this->input->post('password');
-        if ($this->auth_model->login($email, $password)) {
-            redirect(base_url());
-        } else {
-            $this->session->set_flashdata('error', 'Username & Password salah');
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+        $this->form_validation->set_rules('password', 'Password', 'required');
+        if ($this->form_validation->run() == FALSE) {
+            $this->session->set_flashdata('error', validation_errors());
             redirect('auth');
-        }
-    }
-
-    public function reg_check()
-    {
-        $this->form_validation->set_rules('email', 'email', 'trim|required|valid_email|is_unique[users.email]');
-        $this->form_validation->set_rules('password', 'password', 'trim|required|min_length[6]');
-        $this->form_validation->set_rules('name', 'name', 'trim|required');
-        $this->form_validation->set_rules('id_number', 'id_number', 'trim|required');
-        if ($this->form_validation->run() == true) {
-            $id_number = $this->input->post('id_number');
+        } else {
             $email = $this->input->post('email');
             $password = $this->input->post('password');
-            $name = $this->input->post('name');
-            $this->auth_model->register($id_number, $name, $email, $password);
-            $this->session->set_flashdata('success_register', 'Proses Pendaftaran User Berhasil');
-            redirect('auth');
-        } else {
-            $this->session->set_flashdata('error', validation_errors());
-            redirect('auth/register');
+            if ($this->auth_model->login($email, $password)) {
+                redirect(base_url());
+            } else {
+                $this->session->set_flashdata('error', 'Username & Password salah');
+                redirect('auth');
+            }
         }
     }
 
+    #create function to validate register form then send data to auth_model
+    public function reg_check()
+    {
+        $this->form_validation->set_rules('name', 'Name', 'required');
+        $this->form_validation->set_rules('id_number', 'ID Number', 'required');
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[users.email]');
+        $this->form_validation->set_rules('password', 'Password', 'required');
+        $this->form_validation->set_rules('password2', 'Password Confirmation', 'required|matches[password]');
+        if ($this->form_validation->run() == FALSE) {
+            $this->session->set_flashdata('error', validation_errors());
+            redirect('auth/register');
+        } else {
+            $data = array(
+                'name' => $this->input->post('name'),
+                'id_number' => $this->input->post('id_number'),
+                'email' => $this->input->post('email'),
+                'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
+                'role_id' => 2,
+                'image' => rand(1, 50)
+            );
+            $this->auth_model->register($data);
+            $this->session->set_flashdata('success', 'Register Success');
+            redirect('auth');
+        }
+    }
+
+    #create function logout then destroy session
     public function logout()
     {
-        $this->session->unset_userdata('email');
-        $this->session->unset_userdata('id_number');
-        $this->session->unset_userdata('image');
-        $this->session->unset_userdata('name');
-        $this->session->unset_userdata('role');
-        $this->session->unset_userdata('is_login');
-        redirect(base_url());
+        $this->session->sess_destroy();
+        redirect('auth');
     }
 }

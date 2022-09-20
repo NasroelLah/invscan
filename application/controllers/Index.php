@@ -8,7 +8,7 @@ class Index extends CI_Controller
         parent::__construct();
         $this->load->model('auth_model');
         $this->load->model('main_model');
-        $this->auth_model->isLogin();
+        $this->auth_model->is_logged_in();
     }
 
     public function index()
@@ -85,6 +85,7 @@ class Index extends CI_Controller
             $role = $this->input->post('role_id');
             $this->main_model->user_add($id_number, $name, $email, $password, $role);
             redirect('users');
+            $this->session->set_flashdata('success', 'User has been added');
         } else {
             redirect('addUser');
         }
@@ -94,6 +95,7 @@ class Index extends CI_Controller
     {
         $id = $this->input->post('id');
         $this->main_model->user_delete($id);
+        $this->session->set_flashdata('success', 'User has been deleted');
         redirect('users');
     }
 
@@ -140,5 +142,50 @@ class Index extends CI_Controller
         $this->load->view('layout/sidebar');
         $this->load->view('settings', $data);
         $this->load->view('layout/footer');
+    }
+
+    public function roles()
+    {
+        $data['title'] = "Inventory Scanner";
+        $data['name'] = $this->session->userdata('name');
+        $data['id_number'] = $this->session->userdata('id_number');
+        $data['avatar'] = $this->session->userdata('image');
+        $data['user'] = $this->main_model->user_id('id');
+        $data['role_list'] = $this->main_model->role_list();
+
+        $this->load->view('layout/header', $data);
+        $this->load->view('layout/sidebar');
+        $this->load->view('roles', $data);
+        $this->load->view('layout/footer');
+    }
+
+    #create function to delete user_role by id
+    public function role_delete()
+    {
+        $id = $this->input->post('id');
+        $this->main_model->role_delete($id);
+        redirect('roles');
+    }
+
+    #create function to add user_role
+    public function role_add()
+    {
+        $this->form_validation->set_rules('role_name', 'role_name', 'trim|required');
+        if ($this->form_validation->run() == true) {
+            $role_name = $this->input->post('role_name');
+            $this->main_model->role_add($role_name);
+            redirect('roles');
+        } else {
+            redirect('roles');
+        }
+    }
+
+    #create function to update user_role
+    public function role_update()
+    {
+        $id = $this->input->post('id');
+        $role_name = $this->input->post('role_name');
+        $this->main_model->role_update($id, $role_name);
+        redirect('roles');
     }
 }

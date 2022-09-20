@@ -1,72 +1,45 @@
 <?php
 class Auth_model extends CI_Model
 {
-    // private $_table = "users";
-    // const SESSION_KEY = 'user_id';
-
-    // public function rules()
-    // {
-    //     return [
-    //         [
-    //             'field' => 'id_number',
-    //             'label' => 'ID Number',
-    //             'rules' => 'required'
-    //         ],
-    //         [
-    //             'field' => 'name',
-    //             'label' => 'Full Name',
-    //             'rules' => 'required'
-    //         ],
-    //         [
-    //             'field' => 'email',
-    //             'label' => 'Email Address',
-    //             'rules' => 'required|valid_email'
-    //         ],
-    //         [
-    //             'field' => 'password',
-    //             'label' => 'Password',
-    //             'rules' => 'required'
-    //         ]
-    //     ];
-    // }
-
-    public function register($id_number, $name, $email, $password)
+    #create function to insert user data into database
+    public function register($data)
     {
-        $data = array(
-            'id_number' => $id_number,
-            'name' => $name,
-            'email' => $email,
-            'password' => password_hash($password, PASSWORD_DEFAULT),
-            'image' => rand(1, 50)
-        );
         $this->db->insert('users', $data);
     }
 
+    #create function to check if user is logged in
+    public function is_logged_in()
+    {
+        if ($this->session->userdata('logged_in')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    #create function to login user by email and password then set session including user data
     public function login($email, $password)
     {
-        $query = $this->db->get_where('users', array('email' => $email));
-        if ($query->num_rows() > 0) {
-            $data = $query->row();
-            if (password_verify($password, $data->password)) {
-                $this->session->set_userdata('email', $email);
-                $this->session->set_userdata('id_number', $data->id_number);
-                $this->session->set_userdata('image', $data->image);
-                $this->session->set_userdata('name', $data->name);
-                $this->session->set_userdata('role', $data->role_id);
-                $this->session->set_userdata('is_login', TRUE);
+        $this->db->where('email', $email);
+        $result = $this->db->get('users');
+        if ($result->num_rows() == 1) {
+            $data = $result->row_array();
+            if (password_verify($password, $data['password'])) {
+                $session_data = array(
+                    'id_number' => $data['id_number'],
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'role_id' => $data['role_id'],
+                    'image' => $data['image'],
+                    'logged_in' => TRUE
+                );
+                $this->session->set_userdata($session_data);
                 return TRUE;
             } else {
                 return FALSE;
             }
         } else {
             return FALSE;
-        }
-    }
-
-    function isLogin()
-    {
-        if (empty($this->session->userdata('is_login'))) {
-            redirect(base_url('auth'));
         }
     }
 }

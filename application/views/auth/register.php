@@ -40,6 +40,13 @@
                 </div>
             </div>
             <div class="col-12">
+                <label for="validationCustom03" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="validationCustom03" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" name="password2" required>
+                <div class="invalid-feedback">
+                    Password didn't match
+                </div>
+            </div>
+            <div class="col-12">
                 <button class="btn btn-primary" type="submit">Register</button>
             </div>
         </form>

@@ -5,7 +5,7 @@
                 <div class="col">
                     <div class="page-description d-flex align-items-center">
                         <div class="page-description-content flex-grow-1">
-                            <h1>Users</h1>
+                            <h1>Roles</h1>
                         </div>
                         <div class="page-description-actions">
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd"><i class="material-icons">add</i>Add User</button>
@@ -23,11 +23,8 @@
                                 <table class="table table-hover" style="width:100%">
                                     <thead>
                                         <th scope="col">#</th>
-                                        <th scope="col">ID Number</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Role</th>
-                                        <th scope="col">Option</th>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Role Name</th>
                                     </thead>
                                     <tbody>
                                         <?php
@@ -105,13 +102,6 @@
                                     <input type="password" class="form-control" id="validationCustom03" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" name="password" required>
                                     <div class="invalid-feedback">
                                         Please enter password
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <label for="validationCustom03" class="form-label">Confirm Password</label>
-                                    <input type="password" class="form-control" id="validationCustom03" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" name="password2" required>
-                                    <div class="invalid-feedback">
-                                        Password didn't match
                                     </div>
                                 </div>
                                 <div class="col-12">

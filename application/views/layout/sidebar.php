@@ -23,24 +23,35 @@
             <li>
                 <a href="<?= base_url('tagSearch') ?>" class="active"><i class="material-icons-two-tone">wifi_find</i>Tag Search</a>
             </li>
-            <li class="sidebar-title">
-                Manage Accounts
-            </li>
-            <li>
-                <a href="<?= base_url('users') ?>" class="active"><i class="material-icons-two-tone">people</i>Users</a>
-            </li>
-            <li>
+            <?php
+            if ($this->session->userdata('role_id') == '1') {
+            ?>
+                <li class="sidebar-title">
+                    Manage Accounts
+                </li>
+                <li>
+                    <a href="<?= base_url('users') ?>" class="active"><i class="material-icons-two-tone">people</i>Users</a>
+                </li>
+                <!-- <li>
                 <a href="<?= base_url('roles') ?>" class="active"><i class="material-icons-two-tone">manage_accounts</i>Roles</a>
-            </li>
-            <li class="sidebar-title">
-                Options
-            </li>
-            <li>
-                <a href="<?= base_url('settings') ?>" class="active"><i class="material-icons-two-tone">settings</i>Settings</a>
-            </li>
+            </li> -->
+            <?php
+            }
+            if ($this->session->userdata('role_id') != '3') {
+            ?>
+                <li class="sidebar-title">
+                    Options
+                </li>
+                <li>
+                    <a href="<?= base_url('settings') ?>" class="active"><i class="material-icons-two-tone">settings</i>Settings</a>
+                </li>
+            <?php
+            }
+            ?>
             <li>
                 <a href="<?= base_url('auth/logout') ?>" class="active"><i class="material-icons-two-tone">logout</i>Logout</a>
             </li>
+
         </ul>
     </div>
 </div>
